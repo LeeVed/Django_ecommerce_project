@@ -1,0 +1,46 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h3 class="mb-0">⚠️ Подтверждение удаления</h3>
+            </div>
+            
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <h5>Вы уверены, что хотите удалить эту запись?</h5>
+                    <p class="mb-0"><strong>"{{ object.title }}"</strong></p>
+                </div>
+                
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <small class="text-muted">
+                            📅 Создана: {{ object.created_at|date:"d.m.Y H:i" }}<br>
+                            👁️ Просмотров: {{ object.views_count }}<br>
+                            {% if object.preview_image %}
+                            📸 Есть изображение<br>
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'blog:post_detail' object.slug %}" class="btn btn-secondary">
+                            ← Отмена
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            🗑️ Да, удалить навсегда
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

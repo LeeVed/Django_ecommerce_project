@@ -1,0 +1,56 @@
+<nav class="navbar navbar-expand-lg navbar-dark blog-header">
+    <div class="container">
+        <!-- Логотип/Название блога -->
+        <a class="navbar-brand" href="{% url 'blog:post_list' %}">
+            <h1 class="mb-0">📝 Блог SkyStore</h1>
+        </a>
+
+        <!-- Кнопка для мобильного меню -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#blogNavbar" aria-controls="blogNavbar"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Само меню -->
+        <div class="collapse navbar-collapse" id="blogNavbar">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <!-- Ссылка на главную каталога -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'catalog:home' %}">
+                        🏠 Главная магазина
+                    </a>
+                </li>
+
+                <!-- Ссылка на список статей -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'blog:post_list' %}">
+                        📰 Все статьи
+                    </a>
+                </li>
+
+                <!-- Для авторизованных пользователей -->
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'blog:post_create' %}">
+                        ✍️ Новая запись
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin:logout' %}">
+                        👋 Выйти ({{ user.username }})
+                    </a>
+                </li>
+
+                <!-- Для неавторизованных -->
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin:login' %}">
+                        🔐 Войти
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

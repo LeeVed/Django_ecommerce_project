@@ -1,0 +1,71 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <h2 class="mb-4">Последние статьи</h2>
+        
+        {% if posts %}
+            {% for post in posts %}
+                {% include 'blog/includes/post_card.html' with post=post %}
+            {% endfor %}
+            
+            <!-- Пагинация -->
+            {% if is_paginated %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Назад</a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Вперед</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+            
+        {% else %}
+            <div class="alert alert-info">
+                <h4>Статей пока нет!</h4>
+                <p>Будьте первым, кто добавит статью в наш блог.</p>
+                {% if user.is_authenticated %}
+                <a href="{% url 'blog:post_create' %}" class="btn btn-primary">
+                    ✍️ Написать первую статью
+                </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Боковая панель -->
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>📊 Статистика блога</h5>
+            </div>
+            <div class="card-body">
+                <p>Всего записей: {{ posts.count }}</p>
+                <p>Опубликовано: {{ posts|length }}</p>
+                {% if user.is_authenticated %}
+                <a href="{% url 'blog:post_create' %}" class="btn btn-success w-100">
+                    ✍️ Добавить запись
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

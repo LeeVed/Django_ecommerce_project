@@ -1,30 +1,39 @@
-from typing import Any
-
-from django.http import HttpResponse
+from django.views.generic import ListView, DetailView, TemplateView
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render
-
 from .models import Product
 
 
-def home(request: Any) -> HttpResponse:
-    """
-    Контроллер главной страницы.
-    Выполняет ORM-запрос для получения списка всех продуктов.
-    """
-    # ORM-запрос: получить все продукты из базы данных
-    products = Product.objects.all()
-    context = {"products": products, "title": "Skystore - Главная"}
-    return render(request, "home.html", context)
+class HomeView(ListView):
+    """CBV для главной страницы (список продуктов)"""
+    model = Product
+    template_name = "home.html"
+    context_object_name = "products"
+
+    def get_context_data(self, **kwargs):
+        """Добавляем заголовок в контекст"""
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Skystore - Главная"
+        return context
 
 
-def contacts(request: Any) -> HttpResponse:
-    """Контроллер страницы контактов"""
-    return render(request, "contacts.html")
+class ContactsView(TemplateView):
+    """CBV для страницы контактов"""
+    template_name = "contacts.html"
+
+    # Если нужно добавить контекст (например, заголовок)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
 
-def product_detail(request: Any, pk: Any) -> HttpResponse:
-    """Контроллер для отображения детальной информации о товаре"""
-    product = get_object_or_404(Product, pk=pk)
-    context = {"product": product, "title": f"{product.name} - Детальная информация"}
-    return render(request, "catalog/product_detail.html", context)
+class ProductDetailView(DetailView):
+    """CBV для отображения детальной информации о товаре"""
+    model = Product
+    template_name = "catalog/product_detail.html"
+    context_object_name = "product"
+
+    def get_context_data(self, **kwargs):
+        """Добавляем заголовок в контекст"""
+        context = super().get_context_data(**kwargs)
+        context['title'] = f"{self.object.name} - Детальная информация"
+        return context

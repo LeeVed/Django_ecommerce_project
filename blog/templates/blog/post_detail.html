@@ -1,0 +1,73 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<article>
+    <!-- Кнопки управления -->
+    {% if user.is_authenticated %}
+    <div class="d-flex justify-content-end mb-3">
+        <div class="btn-group">
+            <a href="{% url 'blog:post_update' post.slug %}" class="btn btn-warning">
+                ✏️ Редактировать
+            </a>
+            <a href="{% url 'blog:post_delete' post.slug %}" class="btn btn-danger">
+                🗑️ Удалить
+            </a>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Заголовок и метаданные -->
+    <div class="text-center mb-5">
+        <h1 class="display-5">{{ post.title }}</h1>
+        <div class="text-muted mb-3">
+            <span class="me-3">📅 {{ post.created_at|date:"d.m.Y H:i" }}</span>
+            <span class="me-3">👁️ {{ post.views_count }} просмотров</span>
+            {% if post.is_published %}
+            <span class="badge bg-success">✅ Опубликовано</span>
+            {% else %}
+            <span class="badge bg-warning">⏳ Черновик</span>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Изображение -->
+    {% if post.preview_image %}
+    <div class="text-center mb-4">
+        <img src="{{ post.preview_image.url }}" 
+             alt="{{ post.title }}" 
+             class="img-fluid rounded"
+             style="max-height: 400px;">
+    </div>
+    {% endif %}
+    
+    <!-- Содержимое -->
+    <div class="post-content mb-5">
+        {{ post.content|linebreaks }}
+    </div>
+    
+    <!-- Навигация -->
+    <div class="border-top pt-4">
+        <div class="row">
+            <div class="col">
+                <a href="{% url 'blog:post_list' %}" class="btn btn-outline-secondary">
+                    ← Назад к списку статей
+                </a>
+            </div>
+            {% if user.is_authenticated %}
+            <div class="col text-end">
+                <div class="btn-group">
+                    <a href="{% url 'blog:post_update' post.slug %}" class="btn btn-outline-warning">
+                        ✏️ Редактировать
+                    </a>
+                    <a href="{% url 'blog:post_delete' post.slug %}" class="btn btn-outline-danger">
+                        🗑️ Удалить
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</article>
+{% endblock %}

@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.fields import PositiveIntegerField
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -18,7 +19,7 @@ class BlogPost(models.Model):
     slug = models.SlugField(
         max_length=200,
         unique=True,
-        verbose_name='URL-адрес',
+        verbose_name='Слаг',
         help_text='Уникальная часть URL (заполняется автоматически)'
     )
 
@@ -52,7 +53,7 @@ class BlogPost(models.Model):
     )
 
     # Количество просмотров
-    views_count = models.IntegerField(
+    views_count = PositiveIntegerField(
         default=0,
         verbose_name='Количество просмотров',
         help_text='Счетчик просмотров статьи'

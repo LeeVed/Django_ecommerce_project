@@ -11,6 +11,12 @@
 </div>
 
 <div class="container">
+    <!-- Кнопка добавления нового продукта -->
+    <div class="text-end mb-4">
+        <a href="{% url 'catalog:product_create' %}" class="btn btn-success btn-lg">
+            Добавить новый продукт
+        </a>
+    </div>
     <div class="row">
         {% if products %}
             {% for product in products %}
@@ -44,6 +50,16 @@
                            class="btn btn-outline-primary w-100">
                             Подробнее
                         </a>
+                        <div class="btn-group mt-auto" role="group">
+                            <a href="{% url 'catalog:product_update' product.pk %}"
+                               class="btn btn-outline-warning btn-sm">
+                                Редакт.
+                            </a>
+                            <a href="{% url 'catalog:product_delete' product.pk %}"
+                               class="btn btn-outline-danger btn-sm">
+                                Удалить
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -53,6 +69,10 @@
                 <div class="alert alert-info" role="alert">
                     <h4 class="alert-heading">Товаров пока нет!</h4>
                     <p>Товары еще не добавлены в каталог.</p>
+                    <hr>
+                    <a href="{% url 'catalog:product_create' %}" class="btn btn-success">
+                        Создать первый товар
+                    </a>
                 </div>
             </div>
         {% endif %}

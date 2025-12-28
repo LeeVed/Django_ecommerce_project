@@ -23,6 +23,15 @@
                                  class="img-fluid rounded mb-3"
                                  style="max-height: 400px; object-fit: cover;">
                         </div>
+                        {% else %}
+                            <!--  Отображение, когда изображения нет -->
+                            <div class="col-md-6">
+                                <div class="bg-light d-flex flex-column align-items-center justify-content-center rounded mb-3"
+                                     style="height: 400px;">
+                                    <i class="bi bi-image text-muted" style="font-size: 64px;"></i>
+                                    <p class="text-muted mt-3">Изображение отсутствует</p>
+                                </div>
+                            </div>
                         {% endif %}
 
                         <div class="{% if product.image %}col-md-6{% else %}col-12{% endif %}">
@@ -58,6 +67,17 @@
                             </ul>
 
                             <div class="mt-4">
+                                <!-- Кнопка редактирования -->
+                                <a href="{% url 'catalog:product_update' product.pk %}"
+                                   class="btn btn-warning">
+                                    Редактировать
+                                </a>
+
+                                <!-- Кнопка удаления -->
+                                <a href="{% url 'catalog:product_delete' product.pk %}"
+                                   class="btn btn-danger ms-2">
+                                    Удалить
+                                </a>
                                 <!-- Переход на главную страницу -->
                                 <a href="{% url 'catalog:home' %}" class="btn btn-primary">
                                     ← Назад к списку

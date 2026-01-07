@@ -1,5 +1,17 @@
 <nav class="ms-5">
     <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:home' %}">Каталог</a>
-    <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:contacts' %}">Контакты</a>
-    <a class="p-2 btn btn-outline-success" href="{% url 'catalog:product_create' %}">Добавить продукт</a>
+
+    {% if user.is_authenticated %}
+        <!-- Только для авторизованных -->
+        <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:contacts' %}">Контакты</a>
+        <a class="p-2 btn btn-outline-success" href="{% url 'catalog:product_create' %}">Добавить продукт</a>
+        <span class="p-2 text-muted">Привет, {{ user.email }}</span>
+        <form action="{% url 'users:logout' %}" method="get" class="d-inline">
+            <button type="submit" class="btn btn-outline-danger">Выйти</button>
+        </form>
+    {% else %}
+        <!-- Только для неавторизованных -->
+        <a class="p-2 btn btn-outline-success" href="{% url 'users:login' %}">Войти</a>
+        <a class="p-2 btn btn-outline-info" href="{% url 'users:register' %}">Регистрация</a>
+    {% endif %}
 </nav>

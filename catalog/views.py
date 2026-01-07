@@ -6,13 +6,14 @@ from django.views.generic import DetailView
 from django.views.generic import ListView
 from django.views.generic import TemplateView
 from django.views.generic import UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import ProductForm
 from .models import Product
 
 
 class HomeView(ListView):
-    """CBV для главной страницы (список продуктов)"""
+    """CBV для главной страницы (список продуктов) - ОБЩЕДОСТУПНА"""
 
     model = Product
     template_name = "home.html"
@@ -25,8 +26,8 @@ class HomeView(ListView):
         return context
 
 
-class ProductCreateView(CreateView):
-    """CBV для создания нового продукта"""
+class ProductCreateView(LoginRequiredMixin, CreateView):
+    """CBV для создания нового продукта только для АВТОРИЗОВАННЫХ"""
 
     model = Product
     form_class = ProductForm  # форма с валидацией
@@ -35,23 +36,26 @@ class ProductCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         """Добавляем заголовок в контекст"""
+
         context = super().get_context_data(**kwargs)
         context["title"] = "Создание нового продукта"
         return context
 
     def form_valid(self, form):
         """Действия при успешной валидации формы"""
+
         messages.success(self.request, "Продукт успешно создан!")
         return super().form_valid(form)
 
     def form_invalid(self, form):
         """Действия при невалидной форме"""
+
         messages.error(self.request, "Исправьте ошибки в форме")
         return super().form_invalid(form)
 
 
-class ProductUpdateView(UpdateView):
-    """CBV для редактирования существующего продукта"""
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
+    """CBV для редактирования существующего продукта только для АВТОРИЗОВАННЫХ"""
 
     model = Product
     form_class = ProductForm
@@ -59,22 +63,25 @@ class ProductUpdateView(UpdateView):
 
     def get_success_url(self):
         """Перенаправляем на страницу продукта после редактирования"""
+
         return reverse_lazy("catalog:product_detail", kwargs={"pk": self.object.pk})
 
     def get_context_data(self, **kwargs):
         """Добавляем заголовок в контекст"""
+
         context = super().get_context_data(**kwargs)
         context["title"] = f"Редактирование: {self.object.name}"
         return context
 
     def form_valid(self, form):
         """Действия при успешной валидации формы"""
+
         messages.success(self.request, "Продукт успешно обновлен!")
         return super().form_valid(form)
 
 
-class ProductDeleteView(DeleteView):
-    """CBV для удаления продукта"""
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
+    """CBV для удаления продукта только для АВТОРИЗОВАННЫХ"""
 
     model = Product
     template_name = "catalog/product_delete.html"
@@ -82,29 +89,30 @@ class ProductDeleteView(DeleteView):
 
     def get_context_data(self, **kwargs):
         """Добавляем заголовок в контекст"""
+
         context = super().get_context_data(**kwargs)
         context["title"] = f"Удаление: {self.object.name}"
         return context
 
     def delete(self, request, *args, **kwargs):
         """Действия при удалении"""
+
         messages.success(self.request, "Продукт успешно удален!")
         return super().delete(request, *args, **kwargs)
 
 
-class ContactsView(TemplateView):
-    """CBV для страницы контактов"""
+class ContactsView(LoginRequiredMixin, TemplateView):
+    """CBV для страницы контактов только для АВТОРИЗОВАННЫХ"""
 
     template_name = "contacts.html"
-
     # Если нужно добавить контекст (например, заголовок)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
 
 
-class ProductDetailView(DetailView):
-    """CBV для отображения детальной информации о товаре"""
+class ProductDetailView(LoginRequiredMixin, DetailView):
+    """CBV для отображения детальной информации о товаре только для АВТОРИЗОВАННЫХ"""
 
     model = Product
     template_name = "catalog/product_detail.html"
@@ -112,6 +120,7 @@ class ProductDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         """Добавляем заголовок в контекст"""
+
         context = super().get_context_data(**kwargs)
         context["title"] = f"{self.object.name} - Детальная информация"
         return context

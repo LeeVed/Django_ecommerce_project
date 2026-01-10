@@ -1,10 +1,10 @@
 from django.db import models
 
+from config import settings
+
 
 class Category(models.Model):
-    """
-    Модель категории товаров
-    """
+    """Модель категории товаров"""
 
     name = models.CharField(max_length=100, verbose_name="Наименование", help_text="Введите название категории")
     # поле description необязательно
@@ -22,9 +22,7 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    """
-    Модель товара
-    """
+    """Модель товара"""
 
     name = models.CharField(max_length=150, verbose_name="Наименование", help_text="Введите название товара")
     description = models.TextField(verbose_name="Описание", help_text="Введите описание товара")
@@ -50,6 +48,22 @@ class Product(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата последнего изменения")
+    publishing_status = models.CharField(
+        max_length=20,
+        choices=[
+            ('draft', 'Черновик'),
+            ('published', 'Опубликовано'),
+        ],
+        default='draft',
+        verbose_name="Статус публикации",
+    )
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL, # товары остаются, владелец NULL
+        null=True,                 # для старых товаров без владельца
+        verbose_name="Владелец",
+        related_name="products",
+    )
 
     class Meta:
         verbose_name = "Товар"
@@ -59,8 +73,12 @@ class Product(models.Model):
             models.Index(fields=["name"]),  # индексация по названию товара
             models.Index(
                 fields=["category", "created_at"]
-            ),  # составная ндексация для пагинации, фильтрации и отображения новинок
+            ),  # составная индексация для пагинации, фильтрации и отображения новинок
         ]
+        permissions = [
+            ("can_unpublish_product", "Может отменять публикацию продукта"),
+        ]          # здесь ТОЛЬКО кастомные права (без стандартных в Django)
+
 
     def __str__(self):
         return f"{self.name} - {self.price} руб."

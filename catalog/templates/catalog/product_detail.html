@@ -42,6 +42,9 @@
 
                             <div class="mb-3">
                                 <span class="badge bg-primary fs-6">Цена: {{ product.price }} руб.</span>
+                                <span class="badge {% if product.publishing_status == 'published' %}bg-success{% else %}bg-secondary{% endif %} fs-6 ms-2">
+                                    {{ product.get_publishing_status_display }}
+                                </span>
                             </div>
 
                             <ul class="list-group list-group-flush">
@@ -65,25 +68,50 @@
                                     <strong>Последнее обновление:</strong> {{ product.updated_at|date:"d.m.Y H:i" }}
                                 </li>
                             </ul>
+                            <!-- КНОПКИ ДЕЙСТВИЙ С ПРОВЕРКОЙ ПРАВ -->
+                            <div class="mt-4 d-flex flex-wrap gap-2">
+                                <!-- Кнопка редактирования (только для владельца) -->
+                                {% if product.owner and user == product.owner %}
+                                    <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-warning">
+                                        Редактировать
+                                    </a>
+                                {% endif %}
 
-                            <div class="mt-4">
-                                <!-- Кнопка редактирования -->
-                                <a href="{% url 'catalog:product_update' product.pk %}"
-                                   class="btn btn-warning">
-                                    Редактировать
-                                </a>
-
-                                <!-- Кнопка удаления -->
-                                <a href="{% url 'catalog:product_delete' product.pk %}"
-                                   class="btn btn-danger ms-2">
-                                    Удалить
-                                </a>
+                                <!-- Кнопка удаления (для модератора ИЛИ владельца) -->
+                                {% if perms.catalog.delete_product %}
+                                    <!-- Модератор может удалять любой продукт -->
+                                    <form method="post" action="{% url 'catalog:product_delete' product.pk %}"
+                                          class="d-inline"
+                                          onsubmit="return confirm('Удалить продукт {{ product.name }}?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Удалить</button>
+                                    </form>
+                                {% elif product.owner and user == product.owner %}
+                                    <!-- Владелец может удалять только свой продукт -->
+                                    <form method="post" action="{% url 'catalog:product_delete' product.pk %}"
+                                          class="d-inline"
+                                          onsubmit="return confirm('Удалить продукт {{ product.name }}?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Удалить</button>
+                                    </form>
+                                {% endif %}
+                                <!-- Кнопка отмены публикации (только для модераторов и если продукт опубликован) -->
+                                {% if perms.catalog.can_unpublish_product and product.publishing_status == 'published' %}
+                                <form method="post" action="{% url 'catalog:product_unpublish' product.pk %}"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Снять продукт {{ product.name }} с публикации?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-warning">
+                                        Снять с публикации
+                                    </button>
+                                </form>
+                                {% endif %}
                                 <!-- Переход на главную страницу -->
                                 <a href="{% url 'catalog:home' %}" class="btn btn-primary">
                                     ← Назад к списку
                                 </a>
-
-                                <button class="btn btn-success ms-2">
+                                <!-- Кнопка в корзину -->
+                                <button class="btn btn-success">
                                     В корзину
                                 </button>
                             </div>

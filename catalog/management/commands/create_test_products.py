@@ -22,7 +22,7 @@ class Command(BaseCommand):
         Product.objects.all().delete()
         Category.objects.all().delete()
 
-        self.stdout.write(self.style.SUCCESS("✅ База данных очищена"))
+        self.stdout.write(self.style.SUCCESS("База данных очищена"))
 
         # Загружаем фикстуры
         fixtures_dir = options["fixtures_dir"]
@@ -35,7 +35,7 @@ class Command(BaseCommand):
             self.stdout.write(f"Загрузка фикстур из {categories_file}...")
             try:
                 call_command("loaddata", categories_file)
-                self.stdout.write(self.style.SUCCESS("✅ Категории загружены"))
+                self.stdout.write(self.style.SUCCESS("Категории загружены"))
             except Exception as e:
                 self.stdout.write(self.style.ERROR(f"Ошибка: {e}"))
         else:
@@ -48,7 +48,7 @@ class Command(BaseCommand):
             self.stdout.write(f"Загрузка фикстур из {products_file}...")
             try:
                 call_command("loaddata", products_file)
-                self.stdout.write(self.style.SUCCESS("✅ Продукты загружены"))
+                self.stdout.write(self.style.SUCCESS("Продукты загружены"))
             except Exception as e:
                 self.stdout.write(self.style.ERROR(f"Ошибка: {e}"))
         else:

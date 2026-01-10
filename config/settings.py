@@ -1,8 +1,5 @@
 import os
 from pathlib import Path
-
-from django.conf.global_settings import MEDIA_URL
-from django.conf.global_settings import STATICFILES_DIRS
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
@@ -12,6 +9,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG = True if os.getenv("DEBUG") == "True" else False
+
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 ALLOWED_HOSTS = []
 
@@ -100,8 +100,6 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 AUTH_USER_MODEL = "users.CustomUser"
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
-DEFAULT_FROM_EMAIL = "noreply@skystore.com"
-
-LOGIN_URL = "/users/login/"
+LOGIN_URL = '/users/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'

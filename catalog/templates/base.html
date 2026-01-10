@@ -10,18 +10,28 @@
 <body>
     <!-- Навигация  -->
     <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-    <h5 class="my-0 mr-md-auto font-weight-normal">Skystore</h5>
-    {% include 'catalog/includes/main_menu.html' %}
-</div>
+        <h5 class="my-0 mr-md-auto font-weight-normal">Skystore</h5>
+        {% include 'catalog/includes/main_menu.html' %}
+    </div>
 
     <!-- Основное содержимое страниц -->
     <div class="container">
+        <!-- ОТОБРАЖЕНИЕ СООБЩЕНИЙ  -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-3" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
         {% block content %}
         <!-- Подставляется содержимое дочерних шаблонов -->
         {% endblock %}
     </div>
 
-    <!-- Футер как в home.html и contacts.html -->
+    <!-- Футер -->
     <footer class="pt-4 my-md-5 pt-md-5 border-top">
         <div class="row">
             <div class="col-12 col-md">

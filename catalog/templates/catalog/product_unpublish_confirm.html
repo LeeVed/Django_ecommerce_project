@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Снять с публикации: {{ object.name }}</h2>
+    
+    <div class="alert alert-warning">
+        <p>Вы собираетесь снять продукт <strong>"{{ object.name }}"</strong> с публикации.</p>
+        <p>Продукт будет скрыт с главной страницы.</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-warning">Снять с публикации</button>
+        <a href="{% url 'catalog:product_detail' object.pk %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock %}

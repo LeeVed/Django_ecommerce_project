@@ -20,26 +20,24 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    # Отображение полей в списке
-    list_display = ("id", "name", "price", "category", "created_at", "updated_at")
 
-    # Фильтрация по категории
-    list_filter = ("category",)
+    list_display = ("id", "name", "price", "category", "publishing_status", "created_at", "updated_at")
 
-    # Поиск по полям name и description
+    list_filter = ("category", "publishing_status")
+
     search_fields = ("name", "description")
 
     # Поля для отображения при редактировании
     fieldsets = (
         ("Основная информация", {"fields": ("name", "category", "price", "image")}),
         ("Описание", {"fields": ("description",), "classes": ("wide",)}),
+        ("Публикация", {"fields": ("publishing_status",), "classes": ("collapse",)}),
         ("Даты", {"fields": ("created_at", "updated_at"), "classes": ("collapse",)}),
     )
 
-    # Поля только для чтения
     readonly_fields = ("created_at", "updated_at")
 
-    # Добавляем предпросмотр изображения (опционально)
+    # предпросмотр изображения
     def image_preview(self, obj):
         if obj.image:
             from django.utils.html import format_html
@@ -55,5 +53,5 @@ class ProductAdmin(admin.ModelAdmin):
     # Количество элементов на странице
     list_per_page = 20
 
-    # Добавляем возможность быстрого редактирования
-    list_editable = ("price",)
+    # быстрое редактирование
+    list_editable = ("price", "publishing_status")
